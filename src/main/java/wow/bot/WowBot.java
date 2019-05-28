@@ -20,7 +20,7 @@ public class WowBot {
 		ActionDispatcher actionDispatcher = ActionDispatcher.getInstance("wow.bot");
 		MigDispatcherScheduler.getInstance().setMigHunter(MigHunter.getInstance());
 		MigDispatcherScheduler.getInstance().scheduleNewMig();
-
+		config = loadProperties("src/main/resources/config.properties");
 		try {
 			bot = new JDABuilder(System.getenv("WOWBOT_TOKEN"))
 					.addEventListener(actionDispatcher).build();
