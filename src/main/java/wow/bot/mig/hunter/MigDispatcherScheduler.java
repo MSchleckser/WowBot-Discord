@@ -44,7 +44,7 @@ public class MigDispatcherScheduler {
 	}
 
 	private Date getRandomInstant(){
-		return Date.from(LocalDateTime.now().plusMinutes(getRandomDelay())
+		return Date.from(LocalDateTime.now().plusSeconds(getRandomDelay())
 				.atZone(ZoneId.systemDefault()).toInstant());
 	}
 
