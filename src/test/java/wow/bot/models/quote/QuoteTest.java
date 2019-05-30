@@ -1,6 +1,5 @@
 package wow.bot.models.quote;
 
-import jdk.vm.ci.meta.Local;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
