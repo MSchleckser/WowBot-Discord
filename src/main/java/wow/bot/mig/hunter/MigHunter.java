@@ -5,13 +5,12 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import wow.bot.mig.hunter.models.MissLog;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MigHunter {
 	private static MigHunter ourInstance = new MigHunter();
@@ -21,7 +20,7 @@ public class MigHunter {
 	}
 
 	private Scheduler scheduler;
-	private HashMap<String, LocalDateTime> misses = new HashMap<>();
+	private HashMap<String, MissLog> misses = new HashMap<>();
 	private boolean isMigInAir = false;
 	private LocalDateTime timeMigDispatched;
 
@@ -39,12 +38,12 @@ public class MigHunter {
 		User user = message.getAuthor();
 
 		if(!isMigInAir) {
-			logMiss(user, shootTime);
+			logMiss(user, shootTime, type);
 			return "Skies are clear. Return to base for sensor maintenance.";
 		}
 
 		if(!validShooter(type, message))
-			return getCountDown(type, user, shootTime);
+			return getCountDown(misses.get(message.getAuthor().getName()).getType(), user, shootTime);
 
 		if(!isHit(type))
 			return registerMiss(type, message);
@@ -57,7 +56,7 @@ public class MigHunter {
 	}
 
 	private String registerMiss(FireTypes type, Message message){
-		logMiss(message.getAuthor(), message.getCreationTime().toLocalDateTime());
+		logMiss(message.getAuthor(), message.getCreationTime().toLocalDateTime(), type);
 		return type.getMissMessage();
 	}
 
@@ -81,15 +80,16 @@ public class MigHunter {
 		return type.getHitChance() > random.nextFloat() * 100.0f;
 	}
 
-	private void logMiss(User user, LocalDateTime shootTime){
-		misses.put(user.getName(), shootTime);
+	private void logMiss(User user, LocalDateTime shootTime, FireTypes type){
+		misses.put(user.getName(), new MissLog(shootTime, type));
 	}
 
 	private boolean validShooter(FireTypes type, Message message){
-		 if(!misses.containsKey(message.getAuthor().getName()))
+		String authorName = message.getAuthor().getName();
+		 if(!misses.containsKey(authorName))
 		 	return true;
 
-		 if(getDeltaSeconds(message.getCreationTime().toLocalDateTime(), misses.get(message.getAuthor().getName())) > type.getCoolDown()) {
+		 if(getDeltaSeconds(message.getCreationTime().toLocalDateTime(), misses.get(authorName).getMissTime()) > misses.get(authorName).getType().getCoolDown()) {
 			 misses.remove(message.getAuthor().getName());
 			 return true;
 		 }
@@ -99,7 +99,7 @@ public class MigHunter {
 	}
 
 	private String getCountDown(FireTypes type, User user, LocalDateTime shootTime){
-		LocalDateTime missTime = misses.get(user.getName());
+		LocalDateTime missTime = misses.get(user.getName()).getMissTime();
 		float delta = type.getCoolDown() - getDeltaSeconds(shootTime, missTime);
 		return String.format(type.getCoolDownMessage(), delta);
 	}

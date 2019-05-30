@@ -6,8 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Discord" />
         <module name="WowBotDiscord" />
+        <module name="Discord" />
         <module name="WowBot-Discord" />
       </profile>
     </annotationProcessing>
