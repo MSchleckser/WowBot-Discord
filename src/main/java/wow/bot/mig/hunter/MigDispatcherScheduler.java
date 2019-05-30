@@ -50,7 +50,6 @@ public class MigDispatcherScheduler {
 
 	private long getRandomDelay(){
 		long delay = (long)(min + (new Random().nextFloat() * (max - min)));
-		System.out.println("Delay: " + delay);
 		return delay;
 	}
 }
