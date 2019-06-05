@@ -1,12 +1,13 @@
-package wow.bot.mig.hunter;
+package wow.bot.mig.hunter.feature.dispatcher;
 
 import org.quartz.*;
 import wow.bot.WowBot;
+import wow.bot.mig.hunter.MigHunter;
 
 public class MigDispatcher implements Job {
 
 	@Override
-	public void execute(JobExecutionContext context) throws JobExecutionException {
+	public void execute(JobExecutionContext context) {
 		MigHunter migHunter = MigHunter.getInstance();
 
 		if(migHunter.getIsMigInAir()) {

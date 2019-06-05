@@ -3,6 +3,7 @@ package wow.bot.mig.hunter.models;
 import wow.bot.mig.hunter.FireTypes;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class MissLog {
 
@@ -30,5 +31,14 @@ public class MissLog {
 
 	public void setType(FireTypes type) {
 		this.type = type;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		MissLog missLog = (MissLog) o;
+		return Objects.equals(missTime, missLog.missTime) &&
+				type == missLog.type;
 	}
 }
