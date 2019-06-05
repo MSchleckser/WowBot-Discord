@@ -1,9 +1,9 @@
 package wow.bot.mig.hunter;
 
 public enum FireTypes {
-	FOX(50, "Splash! Bogey going down. (Mig killed after %.0f seconds, %s has %s kills)", "Missile defeated try again.",
-			10, "Standy for lock. (%.0f seconds left on cooldown)"),
-	GUNS(20, "He's smoking! Bandit in the water. (Mig killed after %.0f seconds, %s has %s kills)", "That was close, go back around for another run!.",
+	FOX(50, "Splash! Bogey going down. (Mig killed after %.0f seconds and %d passes. %s has %s kills)", "Missile defeated try again.",
+			10, "Standby for lock. (%.0f seconds left on cooldown)"),
+	GUNS(20, "He's smoking! Bandit in the water. (Mig killed after %.0f seconds and %d passes. %s has %s kills)", "That was close, go back around for another run!.",
 			3, "Pull harder! You aren't on him yet! (%.0f seconds left on cooldown)");
 
 	private float hitChance;

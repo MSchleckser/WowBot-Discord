@@ -1,6 +1,8 @@
-package wow.bot.mig.hunter;
+package wow.bot.mig.hunter.feature.dispatcher;
 
 import org.quartz.*;
+import wow.bot.WowBot;
+import wow.bot.mig.hunter.MigHunter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -15,12 +17,14 @@ public class MigDispatcherScheduler {
 	}
 
 	private MigDispatcherScheduler() {
+		min = Float.parseFloat(WowBot.getConfig().getProperty("migPeriodMinimum"));
+		max = Float.parseFloat(WowBot.getConfig().getProperty("migPeriodMaximum"));
 	}
 
 	private MigHunter migHunter;
 
-	private final float min = 120;
-	private final float max = 7200;
+	private final float min;
+	private final float max;
 
 	public void scheduleNewMig(){
 		migHunter.schedule(getJobDetail(), getTrigger());
@@ -38,9 +42,9 @@ public class MigDispatcherScheduler {
 	}
 
 	private Trigger getTrigger(){
-		return ((SimpleTrigger) TriggerBuilder.newTrigger()
+		return TriggerBuilder.newTrigger()
 				.withIdentity("Mig Dispatcher Trigger", "Mig Hunter")
-				.forJob(getJobDetail()).startAt(getRandomInstant()).build());
+				.forJob(getJobDetail()).startAt(getRandomInstant()).build();
 	}
 
 	private Date getRandomInstant(){

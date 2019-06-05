@@ -3,7 +3,7 @@ package wow.bot;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import wow.bot.actions.framework.action.event.listenter.ActionDispatcher;
-import wow.bot.mig.hunter.MigDispatcherScheduler;
+import wow.bot.mig.hunter.feature.dispatcher.MigDispatcherScheduler;
 import wow.bot.mig.hunter.MigHunter;
 
 import javax.security.auth.login.LoginException;
@@ -17,10 +17,10 @@ public class WowBot {
 	private static JDA bot;
 
 	public static void main(String[] args) {
+		config = loadProperties("src/main/resources/config.properties");
 		ActionDispatcher actionDispatcher = ActionDispatcher.getInstance("wow.bot");
 		MigDispatcherScheduler.getInstance().setMigHunter(MigHunter.getInstance());
 		MigDispatcherScheduler.getInstance().scheduleNewMig();
-		config = loadProperties("src/main/resources/config.properties");
 		try {
 			bot = new JDABuilder(System.getenv("WOWBOT_TOKEN"))
 					.addEventListener(actionDispatcher).build();

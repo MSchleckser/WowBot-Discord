@@ -5,11 +5,10 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
-import wow.bot.mig.hunter.models.MissLog;
+import wow.bot.mig.hunter.feature.miss.tracker.MissTracker;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
 import java.util.Random;
 
 public class MigHunter {
@@ -20,7 +19,7 @@ public class MigHunter {
 	}
 
 	private Scheduler scheduler;
-	private HashMap<String, MissLog> misses = new HashMap<>();
+	private MissTracker missTracker = new MissTracker();
 	private boolean isMigInAir = false;
 	private LocalDateTime timeMigDispatched;
 
@@ -33,78 +32,64 @@ public class MigHunter {
 		}
 	}
 
-	public String rollHit(FireTypes type, Message message){
+	public String rollHit(FireTypes type, Message message) {
 		LocalDateTime shootTime = message.getCreationTime().toLocalDateTime();
 		User user = message.getAuthor();
 
-		if(!isMigInAir) {
-			logMiss(user, shootTime, type);
+		if (!isMigInAir) {
+			missTracker.logMiss(message, type);
 			return "Skies are clear. Return to base for sensor maintenance.";
 		}
 
-		if(!validShooter(type, message))
-			return getCountDown(misses.get(message.getAuthor().getName()).getType(), user, shootTime);
+		if (!missTracker.isValidShooter(message))
+			return getCountDown(missTracker.getMostCurrentMissEvent(message.getAuthor()).getType(), user, shootTime);
 
-		if(!isHit(type))
+		if (!isHit(type))
 			return registerMiss(type, message);
 
 		return registerHit(type, message);
 	}
 
-	private float getDeltaSeconds(LocalDateTime messageTime, LocalDateTime testTime){
+	private float getDeltaSeconds(LocalDateTime messageTime, LocalDateTime testTime) {
 		return ChronoUnit.SECONDS.between(testTime, messageTime);
 	}
 
-	private String registerMiss(FireTypes type, Message message){
-		logMiss(message.getAuthor(), message.getCreationTime().toLocalDateTime(), type);
+	private String registerMiss(FireTypes type, Message message) {
+		missTracker.logMiss(message, type);
 		return type.getMissMessage();
 	}
 
-	private String registerHit(FireTypes type, Message message){
+	private String registerHit(FireTypes type, Message message) {
 		isMigInAir = false;
 		float delta = getDeltaSeconds(message.getCreationTime().toLocalDateTime(), timeMigDispatched);
 
 		String kills = registerHitWithDb(message.getAuthor());
 
-		return String.format(type.getHitMessage(), delta, message.getAuthor().getAsMention(), kills);
+		return String.format(type.getHitMessage(),
+				delta,
+				missTracker.getMissCountForUser(message.getAuthor()) + 1,
+				message.getAuthor().getAsMention(),
+				kills);
 	}
 
-	private String registerHitWithDb(User user){
-		 return Unirest.post("http://localhost:8080/kills/add")
-				 .queryString("user", user.getAsMention())
-				 .asString().getBody();
+	private String registerHitWithDb(User user) {
+		return Unirest.post("http://localhost:8080/kills/add")
+				.queryString("user", user.getAsMention())
+				.asString().getBody();
 	}
 
-	private boolean isHit(FireTypes type){
+	private boolean isHit(FireTypes type) {
 		Random random = new Random();
 		return type.getHitChance() > random.nextFloat() * 100.0f;
 	}
 
-	private void logMiss(User user, LocalDateTime shootTime, FireTypes type){
-		misses.put(user.getName(), new MissLog(shootTime, type));
-	}
-
-	private boolean validShooter(FireTypes type, Message message){
-		String authorName = message.getAuthor().getName();
-		 if(!misses.containsKey(authorName))
-		 	return true;
-
-		 if(getDeltaSeconds(message.getCreationTime().toLocalDateTime(), misses.get(authorName).getMissTime()) > misses.get(authorName).getType().getCoolDown()) {
-			 misses.remove(message.getAuthor().getName());
-			 return true;
-		 }
-
-
-		 return false;
-	}
-
-	private String getCountDown(FireTypes type, User user, LocalDateTime shootTime){
-		LocalDateTime missTime = misses.get(user.getName()).getMissTime();
+	private String getCountDown(FireTypes type, User user, LocalDateTime shootTime) {
+		LocalDateTime missTime = missTracker.getMostCurrentMissEvent(user).getMissTime();
 		float delta = type.getCoolDown() - getDeltaSeconds(shootTime, missTime);
 		return String.format(type.getCoolDownMessage(), delta);
 	}
 
-	public void schedule(JobDetail jobDetail, Trigger trigger){
+	public void schedule(JobDetail jobDetail, Trigger trigger) {
 		try {
 			scheduler.clear();
 			scheduler.scheduleJob(jobDetail, trigger);
@@ -113,20 +98,14 @@ public class MigHunter {
 		}
 	}
 
-	public void dispatchMig(){
+	public void dispatchMig() {
+		//Convert to CST.
+		missTracker.clearMisses();
 		timeMigDispatched = LocalDateTime.now().plusHours(5);
 		isMigInAir = true;
 	}
 
-	public boolean getIsMigInAir(){
+	public boolean getIsMigInAir() {
 		return isMigInAir;
-	}
-
-	public LocalDateTime getTimeMigDispatched() {
-		return timeMigDispatched;
-	}
-
-	public void setTimeMigDispatched(LocalDateTime timeMigDispatched) {
-		this.timeMigDispatched = timeMigDispatched;
 	}
 }
