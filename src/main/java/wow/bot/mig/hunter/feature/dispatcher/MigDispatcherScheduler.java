@@ -42,9 +42,9 @@ public class MigDispatcherScheduler {
 	}
 
 	private Trigger getTrigger(){
-		return ((SimpleTrigger) TriggerBuilder.newTrigger()
+		return TriggerBuilder.newTrigger()
 				.withIdentity("Mig Dispatcher Trigger", "Mig Hunter")
-				.forJob(getJobDetail()).startAt(getRandomInstant()).build());
+				.forJob(getJobDetail()).startAt(getRandomInstant()).build();
 	}
 
 	private Date getRandomInstant(){

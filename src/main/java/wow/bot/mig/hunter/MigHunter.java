@@ -67,7 +67,7 @@ public class MigHunter {
 
 		return String.format(type.getHitMessage(),
 				delta,
-				missTracker.getMissCountForUser(message.getAuthor()),
+				missTracker.getMissCountForUser(message.getAuthor()) + 1,
 				message.getAuthor().getAsMention(),
 				kills);
 	}
