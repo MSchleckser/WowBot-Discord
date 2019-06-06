@@ -31,7 +31,7 @@ public class ActionDispatcher extends ListenerAdapter {
 		return INSTANCE;
 	}
 
-	private List<? extends Action> actions;
+	private List<Action> actions;
 
 	private ActionDispatcher(String path) {
 
@@ -71,7 +71,7 @@ public class ActionDispatcher extends ListenerAdapter {
 
 	}
 
-	public List<? extends Action> getActions(){
+	public List<Action> getActions(){
 		return new ArrayList<>(actions);
 	}
 
