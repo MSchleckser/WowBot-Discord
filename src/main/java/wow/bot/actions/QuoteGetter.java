@@ -60,7 +60,6 @@ public final class QuoteGetter {
                     .queryString("user", user.getAsMention())
                     .asJson().getBody().toString();
 
-            System.out.println(jsonReturn);
             quote = convertJsonToQuote(jsonReturn);
         } catch (UnirestException e) {
             e.printStackTrace();
