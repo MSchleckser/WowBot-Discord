@@ -7,9 +7,11 @@ import wow.bot.actions.framework.annotations.ActionDescription;
 @ActionDescription(value = "^(.grab) (<@(.*?)>)", commandDescription = ".grab @User")
 public class GrabQuoteAction extends MessageReceivedAction{
 
+	private QuoteGrabber quoteGrabber = new QuoteGrabber();
+
 	@Override
 	public boolean handleAction(MessageReceivedEvent event) {
-		String response = QuoteGrabber.getQuote(event);
+		String response = quoteGrabber.getQuote(event);
 		event.getChannel().sendMessage(response).queue();
 		return true;
 	}

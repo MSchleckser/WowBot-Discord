@@ -5,6 +5,8 @@ import java.time.temporal.ChronoUnit;
 
 public class DateUtilities {
 
+	private DateUtilities(){}
+
 	/**
 	 * Returns the total number of seconds between the two specified times.
 	 * @param messageTime

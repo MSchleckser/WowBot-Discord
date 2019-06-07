@@ -6,9 +6,12 @@ import wow.bot.actions.framework.annotations.ActionDescription;
 
 @ActionDescription(value = "(.getLast) (<@(.*?)>)", commandDescription = ".getLast @User")
 public class GetLastQuote extends MessageReceivedAction {
+
+	private QuoteGetter quoteGetter = new QuoteGetter();
+
 	@Override
 	public boolean handleAction(MessageReceivedEvent event) {
-		String retMessage = QuoteGetter.getQuote(event);
+		String retMessage = quoteGetter.getQuote(event);
 		event.getChannel().sendMessage(retMessage).queue();
 		return true;
 	}

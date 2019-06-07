@@ -15,16 +15,16 @@ import java.time.format.DateTimeFormatter;
 
 public final class QuoteGetter {
 
-    private static String QUOTE_RETIREVAL_FAILED = "Unable to retrieve any quotes for %s. Sorry :(";
-    private static String QUOTE_FORMAT = "%s said \"%s\" on %s at %s CST";
-    private static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMMM dd");
-    private static DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm");
+    private String QUOTE_RETRIEVAL_FAILED = "Unable to retrieve any quotes for %s. Sorry :(";
+    private String QUOTE_FORMAT = "%s said \"%s\" on %s at %s CST";
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMMM dd");
+    private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm");
 
-    public static String getQuote(MessageReceivedEvent message){
+    public  String getQuote(MessageReceivedEvent message){
         User user = retrieveUser(message.getMessage());
         Quote quote = retrieveQuoteForUser(user);
 
-        String formattedQuote = String.format(QUOTE_RETIREVAL_FAILED, user.getAsMention());
+        String formattedQuote = String.format(QUOTE_RETRIEVAL_FAILED, user.getAsMention());
         if(quote != null) {
             formattedQuote = String.format(QUOTE_FORMAT,
                     quote.getUser(),
@@ -36,11 +36,11 @@ public final class QuoteGetter {
         return formattedQuote;
     }
 
-    public static String getRandomQuote(MessageReceivedEvent message) {
+    public  String getRandomQuote(MessageReceivedEvent message) {
         User user = retrieveUser(message.getMessage());
         Quote quote = retrieveRandomQuoteForUser(user);
 
-        String formattedQuote = String.format(QUOTE_RETIREVAL_FAILED, user.getAsMention());
+        String formattedQuote = String.format(QUOTE_RETRIEVAL_FAILED, user.getAsMention());
         if(quote != null) {
             formattedQuote = String.format(QUOTE_FORMAT,
                     quote.getUser(),
@@ -52,7 +52,7 @@ public final class QuoteGetter {
         return formattedQuote;
     }
 
-    private static Quote retrieveRandomQuoteForUser(User user) {
+    private Quote retrieveRandomQuoteForUser(User user) {
         Quote quote = null;
 
         try {
@@ -68,7 +68,7 @@ public final class QuoteGetter {
         return quote;
     }
 
-    private static Quote retrieveQuoteForUser(User user) {
+    private Quote retrieveQuoteForUser(User user) {
         Quote quote = null;
 
         try {
@@ -84,11 +84,11 @@ public final class QuoteGetter {
         return quote;
     }
 
-    private static User retrieveUser(Message message){
+    private User retrieveUser(Message message){
         return message.getMentionedMembers().get(0).getUser();
     }
 
-    private static Quote convertJsonToQuote(String json){
+    private Quote convertJsonToQuote(String json){
         Quote quote = null;
 
         try {

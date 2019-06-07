@@ -6,9 +6,12 @@ import wow.bot.actions.framework.annotations.ActionDescription;
 
 @ActionDescription(value = "^(.getRandom) (<@(.*?)>)", commandDescription = ".getRandom @User")
 public class GetRandomAction extends MessageReceivedAction{
+
+	private QuoteGetter quoteGetter = new QuoteGetter();
+
 	@Override
 	public boolean handleAction(MessageReceivedEvent event) {
-		String response = QuoteGetter.getRandomQuote(event);
+		String response = quoteGetter.getRandomQuote(event);
 		event.getChannel().sendMessage(response).queue();
 		return true;
 	}

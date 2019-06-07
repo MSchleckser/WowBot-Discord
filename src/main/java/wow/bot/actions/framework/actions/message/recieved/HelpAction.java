@@ -12,7 +12,7 @@ public class HelpAction extends MessageReceivedAction {
 
 	@Override
 	public boolean handleAction(MessageReceivedEvent event) {
-		String commands = ActionDispatcher.getInstance().getActions().stream().map(action -> action.getCommandDescription())
+		String commands = ActionDispatcher.getInstance().getActions().stream().map(Action::getCommandDescription)
 				.collect(Collectors.joining(", "));
 		event.getChannel().sendMessage(commands).queue();
 		return true;

@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 public abstract class Action {
 
+	private static final RuntimeException noAnnotationException = new RuntimeException("Types extending Action require the ActionDescription annotation");
+
     private boolean isEnabled = true;
     private Pattern regex;
     private String helpDescription;
@@ -50,7 +52,7 @@ public abstract class Action {
 				.findFirst().orElse(null);
 
 		if(description == null){
-			throw new RuntimeException("Types extending Action require the ActionDescription annotation");
+			throw noAnnotationException;
 		}
 
 		return description;
