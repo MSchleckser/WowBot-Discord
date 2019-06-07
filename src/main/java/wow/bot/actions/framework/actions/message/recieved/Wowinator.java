@@ -2,12 +2,16 @@ package wow.bot.actions.framework.actions.message.recieved;
 
 import kong.unirest.Unirest;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wow.bot.actions.framework.annotations.ActionDescription;
 
 import java.util.regex.Pattern;
 
 @ActionDescription(value = "Wow", regexFlags = Pattern.CASE_INSENSITIVE, commandDescription = "wow")
 public class Wowinator extends MessageReceivedAction {
+
+	private static final Logger logger = LoggerFactory.getLogger(Wowinator.class);
 
 	public Wowinator() {
 		super();
@@ -20,7 +24,7 @@ public class Wowinator extends MessageReceivedAction {
 			String response = Unirest.get("http://localhost:8080/wow").asString().getBody();
 			wow = response.length() < 200 ? response : wow;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error encountered during REST service call.", e);
 		}
 
 		return wow;

@@ -42,7 +42,7 @@ public class WowBot {
 		try {
 			properties.load(new FileInputStream(path));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error encountered when loading system properties.", e);
 		}
 
 		return properties;

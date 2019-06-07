@@ -8,6 +8,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wow.bot.models.quote.Quote;
 
 import java.time.LocalDateTime;
@@ -15,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 
 public final class QuoteGetter {
 
+    private final Logger logger = LoggerFactory.getLogger(QuoteGetter.class);
     private String QUOTE_RETRIEVAL_FAILED = "Unable to retrieve any quotes for %s. Sorry :(";
     private String QUOTE_FORMAT = "%s said \"%s\" on %s at %s CST";
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMMM dd");
@@ -62,7 +65,7 @@ public final class QuoteGetter {
 
             quote = convertJsonToQuote(jsonReturn);
         } catch (UnirestException e) {
-            e.printStackTrace();
+            logger.error("Error encountered during REST service call.", e);
         }
 
         return quote;
@@ -78,7 +81,7 @@ public final class QuoteGetter {
 
             quote = convertJsonToQuote(jsonReturn);
         } catch (UnirestException e) {
-            e.printStackTrace();
+            logger.error("Error encountered during REST service call.", e);
         }
 
         return quote;
@@ -104,7 +107,7 @@ public final class QuoteGetter {
 
             quote = new Quote(user, text, timestamp);
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("Error encountered during REST service call.", e);
         }
 
         return quote;
