@@ -35,10 +35,9 @@ public class MigDispatcherScheduler {
 	}
 
 	private JobDetail getJobDetail(){
-		JobDetail job = JobBuilder.newJob(MigDispatcher.class)
+		return JobBuilder.newJob(MigDispatcher.class)
 				.withIdentity("Mig Dispatcher", "Mig Hunter")
 				.build();
-		return job;
 	}
 
 	private Trigger getTrigger(){
@@ -53,7 +52,6 @@ public class MigDispatcherScheduler {
 	}
 
 	private long getRandomDelay(){
-		long delay = (long)(min + (new Random().nextFloat() * (max - min)));
-		return delay;
+		return (long)(min + (new Random().nextFloat() * (max - min)));
 	}
 }

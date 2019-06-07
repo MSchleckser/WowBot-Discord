@@ -2,6 +2,8 @@ package wow.bot;
 
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wow.bot.actions.framework.action.event.listenter.ActionDispatcher;
 import wow.bot.mig.hunter.feature.dispatcher.MigDispatcherScheduler;
 import wow.bot.mig.hunter.MigHunter;
@@ -15,6 +17,7 @@ public class WowBot {
 	private static Properties config;
 
 	private static JDA bot;
+	private static Logger logger = LoggerFactory.getLogger(WowBot.class);
 
 	public static void main(String[] args) {
 		config = loadProperties("src/main/resources/config.properties");
@@ -27,11 +30,10 @@ public class WowBot {
 
 			bot.awaitReady();
 		} catch (LoginException e) {
-			System.out.println(e);
-			System.out.println("Unable to login with the provided token.");
+			logger.error("Unable to login with the provided token.");
 			return;
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.error("Interrupted exception during startup.", e);
 		}
 	}
 

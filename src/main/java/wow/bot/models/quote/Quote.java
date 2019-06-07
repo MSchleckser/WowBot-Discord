@@ -1,7 +1,5 @@
 package wow.bot.models.quote;
 
-import net.dv8tion.jda.core.entities.User;
-
 import java.time.LocalDateTime;
 
 public final class Quote {
