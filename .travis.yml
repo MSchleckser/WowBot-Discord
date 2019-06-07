@@ -2,13 +2,13 @@ language: java
 
 addons:
   sonarcloud:
-    organization: "proustibat-github"
+    organization: "mschleckser-github"
     token:
-      secure: "iquR+W0IYA6w/Xd6Kcmvrubb7ky7XNjS9GsWLwWl6Y1Qx46qVbL/sg0yHm1b8k1bxMMmOvOlf2wI7veJX9vOKOp1iIMIUJX+7Ix+tjpGu4DxoR9gLTqstu0ld3E46TAdosIh1iVje8TJqN+q5adFTIGbqpoyhJb3iwcK8IPt9a5mSBKZ8qwCOwg1v5fHcqjKtz7Z5BerSO62R3ALpQ/iLScZLuxr8X+mjIc1aJeQix4PJmgI/jnHbVsjP8D3xdRNqOYbFcMp50cQM0tlJTa54B/5ehWM+q08FhGZNmMAH/mWarNS2/2FFfEbjs7E3qBigX1zr18GX4pw5zVoS0Kt34HpCIIqIvftPT4Y+M5t/XgJ4jDzSkhDyUcxBfuX3iCwv8AQQsVqUrZCD06fjuRsX+l5K3GBYyQVs7h11bcSQTg7bcuQGoJm3C+qQ0BKoz+qn4FBq8hmwZEdcUCJOpbs4yQrocQoFTFLwMkNE3A0vraGRhtKoVq8Tz73LEEBFexJ1ubB493AjYhOydqRXAhoeExrjMfey0OvKt4CxpTomLQHicSvTduDYNlZwJUHHpLOzP3UXKFD1WBzGViIjXPMI0EKQ4Hs37lGX36hi1kN/rj9DFO0eG04o/5AXU7AT+JBl3ne/09EL0/gkFPjR+sJt/h61XXqao39nU7dKGZnADI="
+      secure: "Rs77gyYRiiyaQGVh/yfvk60BAX8fjBFIkAoKnP3+AU/El4DtXXydaIVMtYLCvMGxG/4ot76qT75Q6uQSyTTC9d/drQFYc/IQ1gpGhrNxWUBQl37x746aZoy3QIyWltW4nHvZkOPupQ8x/Y5zsqRg0cikk5oJOE5NvYxkfIAj8uGqzmXE3jT/flcLYNHeRoqgShFa9fHrxtZ5HxtTvdLDdSwBiIhvEWYRquliUuKSL7bgfi6nxdgRwtgRGbZYgahfkK8ijaqUT6MPGoeeT2T9UtRtJcr4F0Sh723hSH5/0TdX6/m6LVlVHdGRXXNNmEEFFLN6rHT0vW+uL33bM3v1RSPFr0RrqA2I6nWuCFfiBcfT012mmvRi+6FbWrKB0yk/GLhM4NFxqO7BH2/dAN5+zUknXx3ByRrkV4qwJyRSQxOL+IWPYTBsyPxgTQgt8mOqgPsINr+1cy7X/l8gfEyVkhFW3HeT7bFIg0n4kRY0X0lndybIUXyodPiZH4tNCksBJMLMYomlo2HK0bOR8P38DK0C0ClO/hfSgFHcmrs+NARgue/deqhdQ4+e4E8shvTiXKic+xNwa1BrLKb3jysT+Bz5twGFFSs93kUtx2Yw3HYJc9MCSytBCvUfMSWyvY7BDpdbWaDYC3vDjA5Ep6jg87EGM3dSAS5yzYrl5yXDuA4="
 
 script:
   - mvn cobertura:cobertura
-  - sonar-scanner
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
