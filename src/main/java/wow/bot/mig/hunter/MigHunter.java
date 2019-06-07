@@ -5,6 +5,8 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wow.bot.mig.hunter.feature.miss.tracker.MissTracker;
 
 import java.time.LocalDateTime;
@@ -18,6 +20,7 @@ public class MigHunter {
 		return ourInstance;
 	}
 
+	private static Logger logger = LoggerFactory.getLogger(MigHunter.class);
 	private Scheduler scheduler;
 	private MissTracker missTracker = new MissTracker();
 	private boolean isMigInAir = false;
@@ -28,7 +31,7 @@ public class MigHunter {
 			scheduler = new StdSchedulerFactory().getScheduler();
 			scheduler.start();
 		} catch (SchedulerException e) {
-			e.printStackTrace();
+			logger.error("Error encountered when building scheduler.", e);
 		}
 	}
 
@@ -94,7 +97,7 @@ public class MigHunter {
 			scheduler.clear();
 			scheduler.scheduleJob(jobDetail, trigger);
 		} catch (SchedulerException e) {
-			e.printStackTrace();
+			logger.error("Error encounter while scheduling jobs.", e);
 		}
 	}
 
