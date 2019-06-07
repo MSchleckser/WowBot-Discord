@@ -9,7 +9,7 @@ public class GetVersionAction extends MessageReceivedAction{
 	@Override
 	public boolean handleAction(MessageReceivedEvent event) {
 		String response = WowBot.getConfig().getProperty("version");
-		((MessageReceivedEvent) event).getChannel().sendMessage(response).queue();
+		event.getChannel().sendMessage(response).queue();
 		return true;
 	}
 }

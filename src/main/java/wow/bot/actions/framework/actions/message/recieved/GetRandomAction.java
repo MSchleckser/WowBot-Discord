@@ -8,8 +8,8 @@ import wow.bot.actions.framework.annotations.ActionDescription;
 public class GetRandomAction extends MessageReceivedAction{
 	@Override
 	public boolean handleAction(MessageReceivedEvent event) {
-		String response = QuoteGetter.getRandomQuote((MessageReceivedEvent) event);
-		((MessageReceivedEvent) event).getChannel().sendMessage(response).queue();
+		String response = QuoteGetter.getRandomQuote(event);
+		event.getChannel().sendMessage(response).queue();
 		return true;
 	}
 }

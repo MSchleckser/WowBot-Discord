@@ -8,9 +8,9 @@ import wow.bot.mig.hunter.utilities.DateUtilities;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Utility class to encapsulate the logic for tracking the number and types of attempts made users.
@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class MissTracker {
 
-	private HashMap<String, List<MissLog>> missLogs = new HashMap<>();
+	private Map<String, List<MissLog>> missLogs = new HashMap<>();
 
 	/**
 	 * Logs the missed attack to the users list of missed attacks. Logs should be cleared after the mig is shot down.
@@ -75,11 +75,8 @@ public class MissTracker {
 			return true;
 
 		float deltaTime = DateUtilities.getDeltaSeconds(message.getCreationTime().toLocalDateTime(), getMostCurrentMissEvent(user).getMissTime());
-		if(deltaTime > getMostCurrentMissEvent(user).getType().getCoolDown()) {
-			return true;
-		}
 
-		return false;
+		return deltaTime > getMostCurrentMissEvent(user).getType().getCoolDown();
 	}
 
 	/**
@@ -93,7 +90,7 @@ public class MissTracker {
 	 *
 	 * @return
 	 */
-	public HashMap<String, List<MissLog>> getMissLogs() {
+	public Map<String, List<MissLog>> getMissLogs() {
 		return missLogs;
 	}
 
@@ -101,7 +98,7 @@ public class MissTracker {
 	 *
 	 * @param missLogs
 	 */
-	public void setMissLogs(HashMap<String, List<MissLog>> missLogs) {
+	public void setMissLogs(Map<String, List<MissLog>> missLogs) {
 		this.missLogs = missLogs;
 	}
 }

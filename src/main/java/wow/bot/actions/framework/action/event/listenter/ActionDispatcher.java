@@ -5,15 +5,20 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wow.bot.actions.framework.Action;
 import wow.bot.actions.framework.actions.message.recieved.MessageReceivedAction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ActionDispatcher extends ListenerAdapter {
+
+	private Logger logger = LoggerFactory.getLogger(ActionDispatcher.class);
 
 	private static ActionDispatcher INSTANCE = null;
 
@@ -38,7 +43,7 @@ public class ActionDispatcher extends ListenerAdapter {
 		Reflections reflections = new Reflections(path, new SubTypesScanner(false));
 		actions = reflections.getSubTypesOf(MessageReceivedAction.class).stream()
 				.map(clazz -> (MessageReceivedAction)this.convertClassToAction(clazz))
-				.filter(action -> action != null)
+				.filter(Objects::isNull)
 				.collect(Collectors.toList());
 	}
 
@@ -78,14 +83,8 @@ public class ActionDispatcher extends ListenerAdapter {
 	private Action convertClassToAction(Class<? extends Action> clazz){
 		try {
 			return  clazz.getConstructor().newInstance();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("Exception when converting class to instance.", e);
 		}
 
 		return null;

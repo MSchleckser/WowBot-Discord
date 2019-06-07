@@ -6,10 +6,13 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wow.bot.models.quote.Quote;
 
 public class QuoteGrabber {
 
+    private final static Logger logger = LoggerFactory.getLogger(QuoteGrabber.class);
     private final static String RESPONSE_ERROR = "Unable to grab %s's getQuote. Sorry :(";
 
     public static String getQuote(MessageReceivedEvent messageReceivedEvent){
@@ -38,8 +41,7 @@ public class QuoteGrabber {
                     .queryString("timestamp", quote.getTimeStamp())
                     .asString().getBody();
         } catch (UnirestException e) {
-            System.err.println("Unable to reach server.");
-            e.printStackTrace();
+            logger.error("Exception when attempting to contact server.", e);
         }
 
         return response == null || response.length() > 200 ? String.format(RESPONSE_ERROR, quote.getUser()) : response;
