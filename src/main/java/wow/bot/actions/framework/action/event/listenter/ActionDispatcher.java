@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import wow.bot.actions.framework.Action;
 import wow.bot.actions.framework.actions.message.recieved.MessageReceivedAction;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,33 +17,31 @@ import java.util.stream.Collectors;
 
 public class ActionDispatcher extends ListenerAdapter {
 
-	private Logger logger = LoggerFactory.getLogger(ActionDispatcher.class);
-
 	private static ActionDispatcher INSTANCE = null;
-
-	public static ActionDispatcher getInstance(){
-		if(INSTANCE == null)
-			throw new NullPointerException("Action Dispatcher has not been initialized. Call ActionDispatcher.getInstance(String path) to initialize Action Dispatcher.");
-
-		return INSTANCE;
-	}
-
-	public static ActionDispatcher getInstance(String path){
-		if(INSTANCE == null)
-			INSTANCE = new ActionDispatcher(path);
-
-		return INSTANCE;
-	}
-
+	private Logger logger = LoggerFactory.getLogger(ActionDispatcher.class);
 	private List<Action> actions;
 
 	private ActionDispatcher(String path) {
 
 		Reflections reflections = new Reflections(path, new SubTypesScanner(false));
 		actions = reflections.getSubTypesOf(MessageReceivedAction.class).stream()
-				.map(clazz -> (MessageReceivedAction)this.convertClassToAction(clazz))
+				.map(clazz -> (MessageReceivedAction) this.convertClassToAction(clazz))
 				.filter(Objects::isNull)
 				.collect(Collectors.toList());
+	}
+
+	public static ActionDispatcher getInstance() {
+		if (INSTANCE == null)
+			throw new NullPointerException("Action Dispatcher has not been initialized. Call ActionDispatcher.getInstance(String path) to initialize Action Dispatcher.");
+
+		return INSTANCE;
+	}
+
+	public static ActionDispatcher getInstance(String path) {
+		if (INSTANCE == null)
+			INSTANCE = new ActionDispatcher(path);
+
+		return INSTANCE;
 	}
 
 	@Override
@@ -60,7 +57,7 @@ public class ActionDispatcher extends ListenerAdapter {
 		if (event.getAuthor().isBot())
 			return;
 
-		if(!event.getChannel().getName().equals("bot-sandbox"))
+		if (!event.getChannel().getName().equals("bot-sandbox"))
 			return;
 
 		MessageReceivedAction foundAction = actions.stream()
@@ -69,20 +66,20 @@ public class ActionDispatcher extends ListenerAdapter {
 				.findFirst()
 				.orElse(null);
 
-		if(foundAction == null)
+		if (foundAction == null)
 			return;
 
 		foundAction.handleAction(event);
 
 	}
 
-	public List<Action> getActions(){
+	public List<Action> getActions() {
 		return new ArrayList<>(actions);
 	}
 
-	private Action convertClassToAction(Class<? extends Action> clazz){
+	private Action convertClassToAction(Class<? extends Action> clazz) {
 		try {
-			return  clazz.getConstructor().newInstance();
+			return clazz.getConstructor().newInstance();
 		} catch (Exception e) {
 			logger.error("Exception when converting class to instance.", e);
 		}

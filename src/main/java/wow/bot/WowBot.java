@@ -31,7 +31,6 @@ public class WowBot {
 			bot.awaitReady();
 		} catch (LoginException e) {
 			logger.error("Unable to login with the provided token.");
-			return;
 		} catch (InterruptedException e) {
 			logger.error("Interrupted exception during startup.", e);
 		}
