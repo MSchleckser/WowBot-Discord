@@ -8,7 +8,7 @@ addons:
 
 script:
   - mvn cobertura:cobertura
-  - mvn clean verify sonar:sonar -Pcoverage
+  - sonar:sonar -Dsonar.projectKey=MSchleckser_WowBot-Discord -Dsonar.organization=mschleckser-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=0b7840704cfa12c3bcb6e4ee907b92f60f6e3e81
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
