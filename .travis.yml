@@ -3,12 +3,10 @@ language: java
 addons:
   sonarcloud:
     organization: "mschleckser-github"
-    token:
-      secure: "Rs77gyYRiiyaQGVh/yfvk60BAX8fjBFIkAoKnP3+AU/El4DtXXydaIVMtYLCvMGxG/4ot76qT75Q6uQSyTTC9d/drQFYc/IQ1gpGhrNxWUBQl37x746aZoy3QIyWltW4nHvZkOPupQ8x/Y5zsqRg0cikk5oJOE5NvYxkfIAj8uGqzmXE3jT/flcLYNHeRoqgShFa9fHrxtZ5HxtTvdLDdSwBiIhvEWYRquliUuKSL7bgfi6nxdgRwtgRGbZYgahfkK8ijaqUT6MPGoeeT2T9UtRtJcr4F0Sh723hSH5/0TdX6/m6LVlVHdGRXXNNmEEFFLN6rHT0vW+uL33bM3v1RSPFr0RrqA2I6nWuCFfiBcfT012mmvRi+6FbWrKB0yk/GLhM4NFxqO7BH2/dAN5+zUknXx3ByRrkV4qwJyRSQxOL+IWPYTBsyPxgTQgt8mOqgPsINr+1cy7X/l8gfEyVkhFW3HeT7bFIg0n4kRY0X0lndybIUXyodPiZH4tNCksBJMLMYomlo2HK0bOR8P38DK0C0ClO/hfSgFHcmrs+NARgue/deqhdQ4+e4E8shvTiXKic+xNwa1BrLKb3jysT+Bz5twGFFSs93kUtx2Yw3HYJc9MCSytBCvUfMSWyvY7BDpdbWaDYC3vDjA5Ep6jg87EGM3dSAS5yzYrl5yXDuA4="
 
 script:
   - mvn cobertura:cobertura
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+  - sonar-scanner
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
