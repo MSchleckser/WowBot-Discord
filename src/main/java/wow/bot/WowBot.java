@@ -5,8 +5,8 @@ import net.dv8tion.jda.core.JDABuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wow.bot.actions.framework.action.event.listenter.ActionDispatcher;
-import wow.bot.mig.hunter.feature.dispatcher.MigDispatcherScheduler;
-import wow.bot.mig.hunter.MigHunter;
+import wow.bot.systems.mig.hunter.feature.dispatcher.MigDispatcherScheduler;
+import wow.bot.systems.mig.hunter.MigHunter;
 
 import javax.security.auth.login.LoginException;
 import java.io.FileInputStream;

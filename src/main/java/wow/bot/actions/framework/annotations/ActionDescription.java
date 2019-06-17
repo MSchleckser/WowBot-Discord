@@ -1,5 +1,7 @@
 package wow.bot.actions.framework.annotations;
 
+import wow.bot.actions.framework.enums.EventFilter;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,4 +15,5 @@ public @interface ActionDescription {
     String commandDescription() default "";
     String helpDescription() default "";
     int regexFlags() default 0;
+    EventFilter[] filters() default {};
 }
