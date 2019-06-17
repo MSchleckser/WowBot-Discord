@@ -2,8 +2,10 @@ package wow.bot.actions.framework;
 
 import net.dv8tion.jda.core.events.Event;
 import wow.bot.actions.framework.annotations.ActionDescription;
+import wow.bot.actions.framework.enums.EventFilter;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public abstract class Action {
@@ -14,7 +16,7 @@ public abstract class Action {
     private Pattern regex;
     private String helpDescription;
     private String commandDescription;
-    private Class<? extends Event> eventType;
+    private List<EventFilter> filters;
 
     public abstract boolean handleAction(Event event);
 
@@ -23,6 +25,7 @@ public abstract class Action {
     	this.regex = Pattern.compile(description.value(), description.regexFlags());
     	this.helpDescription = description.helpDescription();
     	this.commandDescription = description.commandDescription();
+    	this.filters = Arrays.asList(description.filters());
 	}
 
 	public boolean isEnabled() {
@@ -41,11 +44,11 @@ public abstract class Action {
         return commandDescription;
     }
 
-    public Class<? extends Event> getEventType() {
-        return eventType;
-    }
+	public List<EventFilter> getFilters() {
+		return filters;
+	}
 
-    private ActionDescription getAnnotation(){
+	private ActionDescription getAnnotation(){
 		ActionDescription description = Arrays.stream(this.getClass().getAnnotations())
 				.filter(annotation -> annotation instanceof ActionDescription)
 				.map(annotation -> (ActionDescription) annotation)

@@ -1,32 +1,48 @@
 package wow.bot.actions.framework.action.event.listenter;
 
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wow.bot.actions.framework.Action;
-import wow.bot.actions.framework.actions.message.recieved.MessageReceivedAction;
+import wow.bot.actions.framework.actions.message.recieved.MessageAction;
+import wow.bot.actions.framework.actions.privte.message.recieved.PrivateMessageAction;
+import wow.bot.actions.framework.annotations.ActionDescription;
+import wow.bot.actions.framework.enums.EventFilter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ActionDispatcher extends ListenerAdapter {
 
 	private static ActionDispatcher INSTANCE = null;
 	private Logger logger = LoggerFactory.getLogger(ActionDispatcher.class);
-	private List<Action> actions;
+	private List<MessageAction> messageReceivedActions;
+	private List<PrivateMessageAction> privateMessageReceivedActions;
 
 	private ActionDispatcher(String path) {
 
-		Reflections reflections = new Reflections(path, new SubTypesScanner(false));
-		actions = reflections.getSubTypesOf(MessageReceivedAction.class).stream()
-				.map(clazz -> (MessageReceivedAction) this.convertClassToAction(clazz))
-				.filter(Objects::isNull)
+		Reflections reflections = new Reflections(path);
+		List<Action> actions = reflections.getTypesAnnotatedWith(ActionDescription.class).stream()
+				.map(clazz -> convertClassToAction(clazz))
+				.filter(Objects::nonNull).collect(Collectors.toList());
+
+		messageReceivedActions = actions.stream()
+				.filter(action -> action.getFilters().contains(EventFilter.MESSAGE_RECIEVED))
+				.map(action -> (MessageAction) action)
+				.collect(Collectors.toList());
+
+		privateMessageReceivedActions = actions.stream()
+				.filter(action -> action.getFilters().contains(EventFilter.PRIVATE_MESSAGE_RECIEVED))
+				.map(action -> (PrivateMessageAction) action)
 				.collect(Collectors.toList());
 	}
 
@@ -46,10 +62,17 @@ public class ActionDispatcher extends ListenerAdapter {
 
 	@Override
 	public void onReady(ReadyEvent event) {
-		event.getJDA().getTextChannels()
+		Optional<TextChannel> channelOptional =
+				event.getJDA().getTextChannels()
 				.stream().filter(textChannel -> textChannel.getName().contains("bot-sandbox"))
-				.findFirst().get()
-				.sendMessage("The wowinator is ready.").queue();
+				.findFirst();
+
+		if(!channelOptional.isPresent()){
+			logger.error("Unable to locate the channel bot-sandbox for ");
+			return;
+		}
+
+		channelOptional.get().sendMessage("The wowinator is ready.").queue();
 	}
 
 	@Override
@@ -60,8 +83,7 @@ public class ActionDispatcher extends ListenerAdapter {
 		if (!event.getChannel().getName().equals("bot-sandbox"))
 			return;
 
-		MessageReceivedAction foundAction = actions.stream()
-				.map(action -> (MessageReceivedAction) action)
+		MessageAction foundAction = messageReceivedActions.stream()
 				.filter(action -> action.getRegex().matcher(event.getMessage().getContentRaw()).matches())
 				.findFirst()
 				.orElse(null);
@@ -73,15 +95,32 @@ public class ActionDispatcher extends ListenerAdapter {
 
 	}
 
-	public List<Action> getActions() {
-		return new ArrayList<>(actions);
+	@Override
+	public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+		if (event.getAuthor().isBot())
+			return;
+
+		PrivateMessageAction foundAction = privateMessageReceivedActions.stream()
+				.filter(action -> action.getRegex().matcher(event.getMessage().getContentRaw()).matches())
+				.findFirst()
+				.orElse(null);
+
+		if (foundAction == null)
+			return;
+
+		foundAction.handleAction(event);
 	}
 
-	private Action convertClassToAction(Class<? extends Action> clazz) {
+	public List<Action> getMessageReceivedActions() {
+		return new ArrayList<>(messageReceivedActions);
+	}
+
+	private Action convertClassToAction(Class<?> clazz) {
 		try {
-			return clazz.getConstructor().newInstance();
+			return (Action)clazz.getConstructor().newInstance();
 		} catch (Exception e) {
-			logger.error("Exception when converting class to instance.", e);
+			logger.error("Exception when converting class "+ clazz.getCanonicalName() +" to instance.", e);
+
 		}
 
 		return null;

@@ -5,11 +5,12 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wow.bot.actions.framework.annotations.ActionDescription;
+import wow.bot.actions.framework.enums.EventFilter;
 
 import java.util.regex.Pattern;
 
-@ActionDescription(value = "Wow", regexFlags = Pattern.CASE_INSENSITIVE, commandDescription = "wow")
-public class Wowinator extends MessageReceivedAction {
+@ActionDescription(value = "Wow", regexFlags = Pattern.CASE_INSENSITIVE, commandDescription = "wow", filters = {EventFilter.MESSAGE_RECIEVED})
+public class Wowinator extends MessageAction {
 
 	private static final Logger logger = LoggerFactory.getLogger(Wowinator.class);
 

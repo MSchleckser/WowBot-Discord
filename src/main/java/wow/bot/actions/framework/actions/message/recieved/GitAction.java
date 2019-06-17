@@ -5,9 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wow.bot.WowBot;
 import wow.bot.actions.framework.annotations.ActionDescription;
+import wow.bot.actions.framework.enums.EventFilter;
 
-@ActionDescription(value = ".git", commandDescription = ".git")
-public class GitAction extends MessageReceivedAction {
+@ActionDescription(value = ".git", commandDescription = ".git", filters = {EventFilter.MESSAGE_RECIEVED})
+public class GitAction extends MessageAction {
 
 	private Logger logger = LoggerFactory.getLogger(GitAction.class);
 

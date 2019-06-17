@@ -18,8 +18,9 @@ import java.time.format.DateTimeFormatter;
 public final class QuoteGetter {
 
     private final Logger logger = LoggerFactory.getLogger(QuoteGetter.class);
-    private String QUOTE_RETRIEVAL_FAILED = "Unable to retrieve any quotes for %s. Sorry :(";
-    private String QUOTE_FORMAT = "%s said \"%s\" on %s at %s CST";
+    private static final String QUOTE_RETRIEVAL_FAILED = "Unable to retrieve any quotes for %s. Sorry :(";
+    private static final String QUOTE_FORMAT = "%s said \"%s\" on %s at %s CST";
+    private static final String REST_ERROR = "Error encountered during REST service call.";
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMMM dd");
     private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm");
 
@@ -65,7 +66,7 @@ public final class QuoteGetter {
 
             quote = convertJsonToQuote(jsonReturn);
         } catch (UnirestException e) {
-            logger.error("Error encountered during REST service call.", e);
+            logger.error(REST_ERROR, e);
         }
 
         return quote;
@@ -81,7 +82,7 @@ public final class QuoteGetter {
 
             quote = convertJsonToQuote(jsonReturn);
         } catch (UnirestException e) {
-            logger.error("Error encountered during REST service call.", e);
+            logger.error(REST_ERROR, e);
         }
 
         return quote;
@@ -107,7 +108,7 @@ public final class QuoteGetter {
 
             quote = new Quote(user, text, timestamp);
         } catch (ParseException e) {
-            logger.error("Error encountered during REST service call.", e);
+            logger.error(REST_ERROR, e);
         }
 
         return quote;
