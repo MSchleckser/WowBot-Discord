@@ -2,9 +2,7 @@ language: java
 
 addons:
   sonarcloud:
-    organization: "proustibat-github"
-    token:
-      secure: "iquR+W0IYA6w/Xd6Kcmvrubb7ky7XNjS9GsWLwWl6Y1Qx46qVbL/sg0yHm1b8k1bxMMmOvOlf2wI7veJX9vOKOp1iIMIUJX+7Ix+tjpGu4DxoR9gLTqstu0ld3E46TAdosIh1iVje8TJqN+q5adFTIGbqpoyhJb3iwcK8IPt9a5mSBKZ8qwCOwg1v5fHcqjKtz7Z5BerSO62R3ALpQ/iLScZLuxr8X+mjIc1aJeQix4PJmgI/jnHbVsjP8D3xdRNqOYbFcMp50cQM0tlJTa54B/5ehWM+q08FhGZNmMAH/mWarNS2/2FFfEbjs7E3qBigX1zr18GX4pw5zVoS0Kt34HpCIIqIvftPT4Y+M5t/XgJ4jDzSkhDyUcxBfuX3iCwv8AQQsVqUrZCD06fjuRsX+l5K3GBYyQVs7h11bcSQTg7bcuQGoJm3C+qQ0BKoz+qn4FBq8hmwZEdcUCJOpbs4yQrocQoFTFLwMkNE3A0vraGRhtKoVq8Tz73LEEBFexJ1ubB493AjYhOydqRXAhoeExrjMfey0OvKt4CxpTomLQHicSvTduDYNlZwJUHHpLOzP3UXKFD1WBzGViIjXPMI0EKQ4Hs37lGX36hi1kN/rj9DFO0eG04o/5AXU7AT+JBl3ne/09EL0/gkFPjR+sJt/h61XXqao39nU7dKGZnADI="
+    organization: "mschleckser-github"
 
 script:
   - mvn cobertura:cobertura
