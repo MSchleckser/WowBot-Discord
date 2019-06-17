@@ -6,7 +6,7 @@ addons:
 
 script:
   - mvn cobertura:cobertura
-  - sonar-scanner
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
