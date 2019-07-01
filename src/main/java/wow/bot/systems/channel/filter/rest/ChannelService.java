@@ -8,9 +8,9 @@ import java.util.stream.StreamSupport;
 
 public class ChannelService {
 
-	private String basePath = "http://localhost:8080/channels/";
-	private GetRequest isChannelFiltered = Unirest.get("http://localhost:8080/channels/filtered/{channelName}");
-	private HttpRequestWithBody addChannelToFilter = Unirest.post("http://localhost:8080/channels/filtered/add/{channelName}");
+	private final String basePath = "http://localhost:8080/channels/";
+	private final String addChannel = "http://localhost:8080/channels/filtered/add/{channelName}";
+	private final String removeChannel = "http://localhost:8080/channels/filtered/remove/{channelName}";
 
 	public List<String> getFilteredChannels() {
 		HttpResponse<JsonNode> response = Unirest.get(basePath + "filtered").asJson();
@@ -19,11 +19,11 @@ public class ChannelService {
 				.collect(Collectors.toList());
 	}
 
-	public boolean isChannelFiltered(String channelName) {
-		return Boolean.valueOf(isChannelFiltered.routeParam("channelName", channelName).asString().getBody());
+	public boolean addChannel(String channelName){
+		return Unirest.post(addChannel).routeParam("channelName", channelName).asString().getBody().equals("Successful");
 	}
 
-	public boolean addChannelToFilter(String channelName){
-		return addChannelToFilter.routeParam("channelName", channelName).asString().getBody().equals("Successful");
+	public boolean removeChannel(String channelName){
+		return Unirest.post(removeChannel).routeParam("channelName", channelName).asString().getBody().equals("Successful");
 	}
 }

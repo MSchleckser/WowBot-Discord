@@ -9,10 +9,10 @@ import wow.bot.actions.framework.enums.EventFilter;
 import wow.bot.systems.channel.filter.rest.FilterService;
 import wow.bot.systems.user.authentication.UserAuthenticator;
 
-@ActionDescription(value = ".unmute this", filters = EventFilter.MESSAGE_RECIEVED, adminCommand = true)
-public class UnmuteChannel extends MessageAction {
+@ActionDescription(value = ".mute this", filters = EventFilter.MESSAGE_RECIEVED, adminCommand = true)
+public class MuteChannel extends MessageAction {
 
-	private Logger logger = LoggerFactory.getLogger(UnmuteChannel.class);
+	private Logger logger = LoggerFactory.getLogger(MuteChannel.class);
 	private FilterService filterService = FilterService.getInstance();
 	private UserAuthenticator authenticator = new UserAuthenticator();
 
@@ -26,18 +26,18 @@ public class UnmuteChannel extends MessageAction {
 
 		String channelName = event.getChannel().getName();
 		String message = "";
-		if(!filterService.isChannelInFilter(channelName)){
+		if(filterService.isChannelInFilter(channelName)){
 
 			try {
-				filterService.addChannel(channelName);
+				filterService.removeChannel(channelName);
 			} catch (Exception e) {
-				logger.error("Error encountered while attempting to un-mute this channel.", e);
-				message = "Huh. Something when wrong. I couldn't un-mute this channel.";
+				logger.error("Error encountered while removing channel from filter.", e);
+				message = "Huh. Something when wrong. I couldn't mute this channel.";
 			}
 
-			message = message.isEmpty() ? "Channel un-muted. I will now listed for commands here." : message;
+			message = message.isEmpty() ? "Channel muted. I will now listed for commands here." : message;
 		} else {
-			message = "This channel is already un-muted.";
+			message = "This channel is already muted.";
 		}
 
 		event.getChannel().sendMessage(message).queue();

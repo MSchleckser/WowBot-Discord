@@ -4,7 +4,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import wow.bot.actions.framework.actions.message.recieved.MessageAction;
 import wow.bot.actions.framework.annotations.ActionDescription;
 import wow.bot.actions.framework.enums.EventFilter;
-import wow.bot.systems.channel.filter.rest.ChannelService;
+import wow.bot.systems.channel.filter.rest.FilterService;
 import wow.bot.systems.user.authentication.UserAuthenticator;
 
 import java.util.stream.Collectors;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @ActionDescription(value = ".filteredChannels", filters = EventFilter.MESSAGE_RECIEVED)
 public class FilteredChannels extends MessageAction {
 
-	private ChannelService channelService = new ChannelService();
+	private FilterService filterService = FilterService.getInstance();
 	private UserAuthenticator authenticator = new UserAuthenticator();
 
 	@Override
@@ -24,7 +24,7 @@ public class FilteredChannels extends MessageAction {
 			return true;
 		}
 
-		event.getChannel().sendMessage(channelService.getFilteredChannels().stream().collect(Collectors.joining(", "))).queue();
+		event.getChannel().sendMessage(filterService.getFilteredChannels().stream().collect(Collectors.joining(", "))).queue();
 		return true;
 	}
 }
