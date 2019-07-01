@@ -16,4 +16,5 @@ public @interface ActionDescription {
     String helpDescription() default "";
     int regexFlags() default 0;
     EventFilter[] filters() default {};
+    boolean adminCommand() default false;
 }

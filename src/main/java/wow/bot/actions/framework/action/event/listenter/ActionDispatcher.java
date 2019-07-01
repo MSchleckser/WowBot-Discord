@@ -6,7 +6,6 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wow.bot.actions.framework.Action;
@@ -14,6 +13,7 @@ import wow.bot.actions.framework.actions.message.recieved.MessageAction;
 import wow.bot.actions.framework.actions.privte.message.recieved.PrivateMessageAction;
 import wow.bot.actions.framework.annotations.ActionDescription;
 import wow.bot.actions.framework.enums.EventFilter;
+import wow.bot.systems.channel.filter.rest.FilterService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,7 @@ public class ActionDispatcher extends ListenerAdapter {
 	private Logger logger = LoggerFactory.getLogger(ActionDispatcher.class);
 	private List<MessageAction> messageReceivedActions;
 	private List<PrivateMessageAction> privateMessageReceivedActions;
+	private FilterService filterService = FilterService.getInstance();
 
 	private ActionDispatcher(String path) {
 
@@ -62,6 +63,7 @@ public class ActionDispatcher extends ListenerAdapter {
 
 	@Override
 	public void onReady(ReadyEvent event) {
+
 		Optional<TextChannel> channelOptional =
 				event.getJDA().getTextChannels()
 				.stream().filter(textChannel -> textChannel.getName().contains("bot-sandbox"))
@@ -84,7 +86,7 @@ public class ActionDispatcher extends ListenerAdapter {
 			return;
 
 		MessageAction foundAction = messageReceivedActions.stream()
-				.filter(action -> action.getRegex().matcher(event.getMessage().getContentRaw()).matches())
+				.filter(action -> this.ischannelValid(event, action))
 				.findFirst()
 				.orElse(null);
 
@@ -124,5 +126,11 @@ public class ActionDispatcher extends ListenerAdapter {
 		}
 
 		return null;
+	}
+
+	private boolean ischannelValid(MessageReceivedEvent event, MessageAction action){
+		String channelName = event.getChannel().getName();
+
+		return action.getRegex().matcher(event.getMessage().getContentRaw()).matches() && (filterService.isChannelInFilter(channelName) || action.isAdminAction());
 	}
 }

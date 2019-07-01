@@ -17,6 +17,7 @@ public abstract class Action {
     private String helpDescription;
     private String commandDescription;
     private List<EventFilter> filters;
+    private final boolean isAdminAction;
 
     public abstract boolean handleAction(Event event);
 
@@ -26,6 +27,7 @@ public abstract class Action {
     	this.helpDescription = description.helpDescription();
     	this.commandDescription = description.commandDescription();
     	this.filters = Arrays.asList(description.filters());
+    	this.isAdminAction = description.adminCommand();
 	}
 
 	public boolean isEnabled() {
@@ -59,5 +61,9 @@ public abstract class Action {
 		}
 
 		return description;
+	}
+
+	public boolean isAdminAction() {
+		return isAdminAction;
 	}
 }
