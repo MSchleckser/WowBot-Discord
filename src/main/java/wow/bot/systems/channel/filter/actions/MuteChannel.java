@@ -7,23 +7,16 @@ import wow.bot.actions.framework.actions.message.recieved.MessageAction;
 import wow.bot.actions.framework.annotations.ActionDescription;
 import wow.bot.actions.framework.enums.EventFilter;
 import wow.bot.systems.channel.filter.rest.FilterService;
-import wow.bot.systems.user.authentication.UserAuthenticator;
+import wow.bot.systems.user.authentication.enums.Role;
 
-@ActionDescription(value = ".mute this", filters = EventFilter.MESSAGE_RECIEVED, adminCommand = true)
+@ActionDescription(value = ".mute this", filters = EventFilter.MESSAGE_RECIEVED, minimumPrivilegeLevel = Role.ADMIN)
 public class MuteChannel extends MessageAction {
 
 	private Logger logger = LoggerFactory.getLogger(MuteChannel.class);
 	private FilterService filterService = FilterService.getInstance();
-	private UserAuthenticator authenticator = new UserAuthenticator();
 
 	@Override
 	public boolean handleAction(MessageReceivedEvent event) {
-		String role = authenticator.getUserRole(event.getAuthor().getAsMention());
-		if(!role.equals("ADMIN")) {
-			event.getChannel().sendMessage("Sorry, you aren't authorized to do this action.").queue();
-			return true;
-		}
-
 		String channelName = event.getChannel().getName();
 		String message = "";
 		if(filterService.isChannelInFilter(channelName)){

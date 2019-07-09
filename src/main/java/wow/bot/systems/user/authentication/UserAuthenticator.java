@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kong.unirest.Unirest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wow.bot.systems.user.authentication.enums.Role;
 import wow.bot.systems.user.authentication.models.User;
 
 import java.io.UnsupportedEncodingException;
@@ -26,6 +27,15 @@ public class UserAuthenticator {
 		}
 
 		return Unirest.get(getUserRolePath+userMention).asString().getBody();
+	}
+	public Role getUserRoleAsRole(String userMention){
+		try {
+			userMention = URLEncoder.encode(userMention, StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e) {
+			logger.error("Unexpected Error while encoding userMention.", e);
+		}
+
+		return Role.valueOf(Unirest.get(getUserRolePath+userMention).asString().getBody());
 	}
 
 	public boolean setUserRole(String userMention, String role){

@@ -14,11 +14,15 @@ import wow.bot.actions.framework.actions.privte.message.recieved.PrivateMessageA
 import wow.bot.actions.framework.annotations.ActionDescription;
 import wow.bot.actions.framework.enums.EventFilter;
 import wow.bot.systems.channel.filter.rest.FilterService;
+import wow.bot.systems.spam.filter.services.SpamFilterService;
+import wow.bot.systems.user.authentication.UserAuthenticator;
+import wow.bot.systems.user.authentication.enums.Role;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ActionDispatcher extends ListenerAdapter {
@@ -28,6 +32,8 @@ public class ActionDispatcher extends ListenerAdapter {
 	private List<MessageAction> messageReceivedActions;
 	private List<PrivateMessageAction> privateMessageReceivedActions;
 	private FilterService filterService = FilterService.getInstance();
+	private SpamFilterService spamFilterService = SpamFilterService.getInstance();
+	private UserAuthenticator userAuthenticator = new UserAuthenticator();
 
 	private ActionDispatcher(String path) {
 
@@ -85,8 +91,9 @@ public class ActionDispatcher extends ListenerAdapter {
 		if (!event.getChannel().getName().equals("bot-sandbox"))
 			return;
 
+
 		MessageAction foundAction = messageReceivedActions.stream()
-				.filter(action -> this.ischannelValid(event, action))
+				.filter(action -> this.isChannelValid(event, action))
 				.findFirst()
 				.orElse(null);
 
@@ -94,7 +101,7 @@ public class ActionDispatcher extends ListenerAdapter {
 			return;
 
 		foundAction.handleAction(event);
-
+		spamFilterService.log(event.getAuthor().getAsMention());
 	}
 
 	@Override
@@ -128,9 +135,26 @@ public class ActionDispatcher extends ListenerAdapter {
 		return null;
 	}
 
-	private boolean ischannelValid(MessageReceivedEvent event, MessageAction action){
+	private boolean isChannelValid(MessageReceivedEvent event, MessageAction action){
 		String channelName = event.getChannel().getName();
 
-		return action.getRegex().matcher(event.getMessage().getContentRaw()).matches() && (filterService.isChannelInFilter(channelName) || action.isAdminAction());
+		Role minimumPrivilegeLevel = spamFilterService.isUserSlowed(event.getAuthor().getAsMention()) ? Role.ADMIN : Role.USER;
+		minimumPrivilegeLevel = minimumPrivilegeLevel.getPrivilegeLevel() < action.getMinimumPrivilegeLevel().getPrivilegeLevel() ? action.getMinimumPrivilegeLevel() : minimumPrivilegeLevel;
+
+		return channelMessageMatchesActionRegex(event.getMessage().getContentRaw(), action.getRegex())
+				&& isChannelInFilter(action, channelName)
+				&& isUserAuthenticated(event, minimumPrivilegeLevel);
+	}
+
+	private boolean channelMessageMatchesActionRegex(String messageContent, Pattern actionPattern){
+		return actionPattern.matcher(messageContent).matches();
+	}
+
+	private boolean isChannelInFilter(Action action, String channelName) {
+		return (filterService.isChannelInFilter(channelName) || action.getMinimumPrivilegeLevel().equals(Role.ADMIN));
+	}
+
+	private boolean isUserAuthenticated(MessageReceivedEvent event, Role minimumPrivilegeLevel){
+		return userAuthenticator.getUserRoleAsRole(event.getAuthor().getAsMention()).getPrivilegeLevel() >= minimumPrivilegeLevel.getPrivilegeLevel();
 	}
 }
