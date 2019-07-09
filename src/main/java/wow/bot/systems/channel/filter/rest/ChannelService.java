@@ -8,9 +8,9 @@ import java.util.stream.StreamSupport;
 
 public class ChannelService {
 
-	private final String basePath = "http://localhost:8080/channels/";
-	private final String addChannel = "http://localhost:8080/channels/filtered/add/{channelName}";
-	private final String removeChannel = "http://localhost:8080/channels/filtered/remove/{channelName}";
+	private static final String basePath = "http://localhost:8080/channels/";
+	private static final String addChannel = "http://localhost:8080/channels/filtered/add/{channelName}";
+	private static final String removeChannel = "http://localhost:8080/channels/filtered/remove/{channelName}";
 
 	public List<String> getFilteredChannels() {
 		HttpResponse<JsonNode> response = Unirest.get(basePath + "filtered").asJson();
