@@ -10,7 +10,7 @@ import wow.bot.systems.channel.filter.rest.FilterService;
 import wow.bot.systems.user.authentication.UserAuthenticator;
 import wow.bot.systems.user.authentication.enums.Role;
 
-@ActionDescription(value = ".unmute this", filters = EventFilter.MESSAGE_RECIEVED, minimumPrivilegeLevel = Role.ADMIN)
+@ActionDescription(value = ".unmute this", filters = EventFilter.MESSAGE_RECIEVED, minimumPrivilegeLevel = Role.ADMIN, commandDescription = ".unmute this (Admin only)")
 public class UnmuteChannel extends MessageAction {
 
 	private Logger logger = LoggerFactory.getLogger(UnmuteChannel.class);

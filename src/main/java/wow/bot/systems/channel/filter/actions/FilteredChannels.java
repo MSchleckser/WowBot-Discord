@@ -8,7 +8,7 @@ import wow.bot.systems.channel.filter.rest.FilterService;
 
 import java.util.stream.Collectors;
 
-@ActionDescription(value = ".filteredChannels", filters = EventFilter.MESSAGE_RECIEVED)
+@ActionDescription(value = ".filteredChannels", filters = EventFilter.MESSAGE_RECIEVED, commandDescription = ".filteredChannels")
 public class FilteredChannels extends MessageAction {
 
 	private FilterService filterService = FilterService.getInstance();
