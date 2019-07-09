@@ -6,7 +6,7 @@ import wow.bot.actions.framework.annotations.ActionDescription;
 import wow.bot.actions.framework.enums.EventFilter;
 import wow.bot.systems.spam.filter.services.SpamFilterService;
 
-@ActionDescription(value = ".slowdown", filters = EventFilter.MESSAGE_RECIEVED)
+@ActionDescription(value = ".slowdown", filters = EventFilter.MESSAGE_RECIEVED, commandDescription = ".slowdown")
 public class GetCurrentSlowDown extends MessageAction {
 
 	private SpamFilterService spamFilterService = SpamFilterService.getInstance();

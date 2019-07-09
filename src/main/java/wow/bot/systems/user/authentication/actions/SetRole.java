@@ -7,7 +7,7 @@ import wow.bot.actions.framework.enums.EventFilter;
 import wow.bot.systems.user.authentication.UserAuthenticator;
 import wow.bot.systems.user.authentication.enums.Role;
 
-@ActionDescription(value = "(.setRole) (<@(.*?)>) (\\w)+", filters = EventFilter.MESSAGE_RECIEVED, minimumPrivilegeLevel = Role.ADMIN)
+@ActionDescription(value = "(.setRole) (<@(.*?)>) (\\w)+", filters = EventFilter.MESSAGE_RECIEVED, minimumPrivilegeLevel = Role.ADMIN, commandDescription = ".setRole UserMention Role (Admin only)")
 public class SetRole extends MessageAction {
 
 	private UserAuthenticator userAuthenticator = new UserAuthenticator();

@@ -7,7 +7,7 @@ import wow.bot.actions.framework.enums.EventFilter;
 import wow.bot.systems.spam.filter.services.SpamFilterService;
 import wow.bot.systems.user.authentication.enums.Role;
 
-@ActionDescription(value = ".slowdown \\d+", filters = EventFilter.MESSAGE_RECIEVED, minimumPrivilegeLevel = Role.ADMIN)
+@ActionDescription(value = ".slowdown \\d+", filters = EventFilter.MESSAGE_RECIEVED, minimumPrivilegeLevel = Role.ADMIN, commandDescription = ".slowdown duration (Admin only)")
 public class Slowdown extends MessageAction {
 
 	private SpamFilterService spamFilterService = SpamFilterService.getInstance();

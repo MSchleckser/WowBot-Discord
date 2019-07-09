@@ -9,7 +9,7 @@ import wow.bot.actions.framework.enums.EventFilter;
 import wow.bot.systems.channel.filter.rest.FilterService;
 import wow.bot.systems.user.authentication.enums.Role;
 
-@ActionDescription(value = ".mute this", filters = EventFilter.MESSAGE_RECIEVED, minimumPrivilegeLevel = Role.ADMIN)
+@ActionDescription(value = ".mute this", filters = EventFilter.MESSAGE_RECIEVED, minimumPrivilegeLevel = Role.ADMIN, commandDescription = ".mute this (Admin only)")
 public class MuteChannel extends MessageAction {
 
 	private Logger logger = LoggerFactory.getLogger(MuteChannel.class);
