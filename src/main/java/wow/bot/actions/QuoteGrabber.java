@@ -13,7 +13,7 @@ import wow.bot.models.quote.Quote;
 public class QuoteGrabber {
 
     private final Logger logger = LoggerFactory.getLogger(QuoteGrabber.class);
-    private final String RESPONSE_ERROR = "Unable to grab %s's getQuote. Sorry :(";
+    private final static String RESPONSE_ERROR = "Unable to grab %s's getQuote. Sorry :(";
 
     public String getQuote(MessageReceivedEvent messageReceivedEvent){
         Quote quote = convertEventToQuote(messageReceivedEvent);

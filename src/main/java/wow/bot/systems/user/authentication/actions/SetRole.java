@@ -14,7 +14,6 @@ public class SetRole extends MessageAction {
 
 	@Override
 	public boolean handleAction(MessageReceivedEvent event) {
-		System.out.println("Test");
 		if(userAuthenticator.setUserRole(event.getMessage().getMentionedUsers().get(0).getAsMention(), event.getMessage().getContentRaw().split(" ")[2])){
 			event.getChannel().sendMessage("User's role updated.").queue();
 		} else {

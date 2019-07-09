@@ -8,7 +8,7 @@ public class SpamFilterService {
 
 	private static SpamFilterService INSTANCE = new SpamFilterService();
 
-	public static SpamFilterService getInstance() { return INSTANCE; }
+	public static final SpamFilterService getInstance() { return INSTANCE; }
 
 	private SpamFilterService(){}
 

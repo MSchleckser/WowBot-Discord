@@ -39,7 +39,7 @@ public class ActionDispatcher extends ListenerAdapter {
 
 		Reflections reflections = new Reflections(path);
 		List<Action> actions = reflections.getTypesAnnotatedWith(ActionDescription.class).stream()
-				.map(clazz -> convertClassToAction(clazz))
+				.map(this::convertClassToAction)
 				.filter(Objects::nonNull).collect(Collectors.toList());
 
 		messageReceivedActions = actions.stream()

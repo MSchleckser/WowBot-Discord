@@ -31,20 +31,4 @@ public class KillCountForUserAction extends MessageAction {
 		event.getChannel().sendMessage(message).queue();
 		return true;
 	}
-
-	public String getCountMessage() {
-		return countMessage;
-	}
-
-	public void setCountMessage(String countMessage) {
-		this.countMessage = countMessage;
-	}
-
-	public MigHunterRestCallHandler getMigHunterRestCallHandler() {
-		return migHunterRestCallHandler;
-	}
-
-	public void setMigHunterRestCallHandler(MigHunterRestCallHandler migHunterRestCallHandler) {
-		this.migHunterRestCallHandler = migHunterRestCallHandler;
-	}
 }
