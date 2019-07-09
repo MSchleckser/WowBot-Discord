@@ -3,6 +3,7 @@ package wow.bot.actions.framework;
 import net.dv8tion.jda.core.events.Event;
 import wow.bot.actions.framework.annotations.ActionDescription;
 import wow.bot.actions.framework.enums.EventFilter;
+import wow.bot.systems.user.authentication.enums.Role;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +18,7 @@ public abstract class Action {
     private String helpDescription;
     private String commandDescription;
     private List<EventFilter> filters;
-    private final boolean isAdminAction;
+    private Role minimumPrivilegeLevel;
 
     public abstract boolean handleAction(Event event);
 
@@ -27,7 +28,7 @@ public abstract class Action {
     	this.helpDescription = description.helpDescription();
     	this.commandDescription = description.commandDescription();
     	this.filters = Arrays.asList(description.filters());
-    	this.isAdminAction = description.adminCommand();
+    	this.minimumPrivilegeLevel = description.minimumPrivilegeLevel();
 	}
 
 	public boolean isEnabled() {
@@ -63,7 +64,7 @@ public abstract class Action {
 		return description;
 	}
 
-	public boolean isAdminAction() {
-		return isAdminAction;
+	public Role getMinimumPrivilegeLevel() {
+		return minimumPrivilegeLevel;
 	}
 }

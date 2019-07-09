@@ -5,15 +5,15 @@ import wow.bot.actions.framework.actions.privte.message.recieved.PrivateMessageA
 import wow.bot.actions.framework.annotations.ActionDescription;
 import wow.bot.actions.framework.enums.EventFilter;
 import wow.bot.systems.user.authentication.UserAuthenticator;
+import wow.bot.systems.user.authentication.enums.Role;
 
-@ActionDescription(value = ".role", filters = {EventFilter.PRIVATE_MESSAGE_RECIEVED})
+@ActionDescription(value = ".role", filters = {EventFilter.PRIVATE_MESSAGE_RECIEVED}, minimumPrivilegeLevel = Role.ADMIN)
 public class GetRole extends PrivateMessageAction {
 
 	private UserAuthenticator userAuthenticator = new UserAuthenticator();
 
 	@Override
 	public boolean handleAction(PrivateMessageReceivedEvent event) {
-		System.out.println(event.getAuthor().getAsMention());
 		event.getChannel().sendMessage(userAuthenticator.getUserRole(event.getAuthor().getAsMention())).queue();
 		return true;
 	}
