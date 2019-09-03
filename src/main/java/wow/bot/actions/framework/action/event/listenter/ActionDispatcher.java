@@ -2,6 +2,7 @@ package wow.bot.actions.framework.action.event.listenter;
 
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -17,6 +18,7 @@ import wow.bot.systems.channel.filter.rest.FilterService;
 import wow.bot.systems.spam.filter.services.SpamFilterService;
 import wow.bot.systems.user.authentication.UserAuthenticator;
 import wow.bot.systems.user.authentication.enums.Role;
+import wow.bot.systems.welcomer.service.WelcomeService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,7 @@ public class ActionDispatcher extends ListenerAdapter {
 	private FilterService filterService = FilterService.getInstance();
 	private SpamFilterService spamFilterService = SpamFilterService.getInstance();
 	private UserAuthenticator userAuthenticator = new UserAuthenticator();
+	private WelcomeService welcomeService = WelcomeService.getInstance();
 
 	private ActionDispatcher(String path) {
 
@@ -85,12 +88,9 @@ public class ActionDispatcher extends ListenerAdapter {
 
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
+		System.out.println(event.getAuthor().getAsMention());
 		if (event.getAuthor().isBot())
 			return;
-
-		if (!event.getChannel().getName().equals("bot-sandbox"))
-			return;
-
 
 		MessageAction foundAction = messageReceivedActions.stream()
 				.filter(action -> this.isChannelValid(event, action))
@@ -118,6 +118,16 @@ public class ActionDispatcher extends ListenerAdapter {
 			return;
 
 		foundAction.handleAction(event);
+	}
+
+	@Override
+	public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+		TextChannel channel = event.getJDA().getTextChannels().stream().filter(c -> c.getName().equals(welcomeService.getWelcomeChannel())).findFirst().orElse(null);
+
+		if(channel == null)
+			return;
+
+		channel.sendMessage(String.format("Welcome %s! Enjoy your stay Speed and Angels.", event.getUser().getAsMention())).queue();
 	}
 
 	public List<Action> getMessageReceivedActions() {
