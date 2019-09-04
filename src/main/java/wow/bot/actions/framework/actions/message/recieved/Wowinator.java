@@ -20,9 +20,12 @@ public class Wowinator extends MessageAction {
 
 	public static String getWow() {
 		String wow = "Unable to wow. I am very saddened.";
-
 		try {
 			String response = Unirest.get("http://localhost:8080/wow").asString().getBody();
+
+			if(response.equals("Fail"))
+				return wow;
+
 			wow = response.length() < 200 ? response : wow;
 		} catch (Exception e) {
 			logger.error("Error encountered during REST service call.", e);

@@ -9,7 +9,6 @@ import wow.bot.systems.mig.hunter.feature.dispatcher.MigDispatcherScheduler;
 import wow.bot.systems.mig.hunter.MigHunter;
 
 import javax.security.auth.login.LoginException;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -20,17 +19,18 @@ public class WowBot {
 	private static Logger logger = LoggerFactory.getLogger(WowBot.class);
 
 	public static void main(String[] args) {
-		config = loadProperties("src/main/resources/config.properties");
+		config = loadProperties("/config.properties");
 		ActionDispatcher actionDispatcher = ActionDispatcher.getInstance("wow.bot");
 		MigDispatcherScheduler.getInstance().setMigHunter(MigHunter.getInstance());
 		MigDispatcherScheduler.getInstance().scheduleNewMig();
+		String token = getToken(config);
 		try {
-			bot = new JDABuilder(System.getenv("WOWBOT_TOKEN"))
+			bot = new JDABuilder(token)
 					.addEventListener(actionDispatcher).build();
 
 			bot.awaitReady();
 		} catch (LoginException e) {
-			logger.error("Unable to login with the provided token.");
+			logger.error("Unable to login with the provided token. Token: " + token);
 		} catch (InterruptedException e) {
 			logger.error("Interrupted exception during startup.", e);
 		}
@@ -40,7 +40,7 @@ public class WowBot {
 		Properties properties = new Properties();
 
 		try {
-			properties.load(new FileInputStream(path));
+			properties.load(new WowBot().getClass().getResourceAsStream(path));
 		} catch (IOException e) {
 			logger.error("Error encountered when loading system properties.", e);
 		}
@@ -58,5 +58,14 @@ public class WowBot {
 
 	public static Properties getConfig() {
 		return config;
+	}
+
+	private static String getToken(Properties inputStream){
+		String token = System.getenv("WOWBOT_TOKEN");
+
+		if(token == null)
+			token = inputStream.getProperty("WOWBOT_TOKEN").trim();
+
+		return token;
 	}
 }
